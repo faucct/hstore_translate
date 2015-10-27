@@ -10,11 +10,14 @@ module HstoreTranslate
       attrs.each do |attr_name|
         serialize "#{attr_name}_translations", ActiveRecord::Coders::Hstore unless HstoreTranslate::native_hstore?
 
+        define_attribute_method attr_name.to_s
+
         define_method attr_name do
           read_hstore_translation(attr_name)
         end
 
         define_method "#{attr_name}=" do |value|
+          send("#{attr_name}_will_change!") unless value == send(attr_name)
           write_hstore_translation(attr_name, value)
         end
 
