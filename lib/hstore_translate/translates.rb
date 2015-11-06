@@ -2,6 +2,7 @@ module HstoreTranslate
   module Translates
     def translates(*attrs)
       include InstanceMethods
+      extend ClassMethods
 
       class_attribute :translated_attrs
       alias_attribute :translated_attribute_names, :translated_attrs # Improve compatibility with the gem globalize
@@ -131,6 +132,10 @@ module HstoreTranslate
           @enabled_fallback = enabled
         end
       end
+    end
+
+    module ClassMethods
+      include ActiveRecord::QueryMethods
     end
   end
 end
