@@ -145,4 +145,19 @@ class TranslatesTest < HstoreTranslate::Test
   def test_class_method_translates?
     assert_equal true, Post.translates?
   end
+
+  def test_order
+    p1 = Post.create!(title_en: 'title1', title_fr: 'titre2')
+    p2 = Post.create!(title_en: 'title2', title_fr: 'titre1')
+    I18n.with_locale(:en) do
+      assert_equal Post.order(:title), [p1, p2]
+      assert_equal Post.order(title: :asc), [p1, p2]
+      assert_equal Post.order(title: :desc), [p2, p1]
+    end
+    I18n.with_locale(:fr) do
+      assert_equal Post.order(:title), [p2, p1]
+      assert_equal Post.order(title: :asc), [p2, p1]
+      assert_equal Post.order(title: :desc), [p1, p2]
+    end
+  end
 end
